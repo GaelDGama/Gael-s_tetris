@@ -1,38 +1,56 @@
 import pygame
 import random
 
-class block1():
+class onebyone():
     def __init__(self, playing_area, position):
         self.area = playing_area
         self.color = (0,230,0)
         self.position = position
-        self.size = [self.position[0], self.position[1], 100,50]
+        self.size = [self.position[0], self.position[1], 50,50]
         self.down =False
+        self.d_x = playing_area.get_width() // 10
+        self.onebyone = [self.size]
 
     def draw(self):
-        return pygame.draw.rect(self.area, self.color, self.size)
+        pygame.draw.rect(self.area, self.color, self.size)
     
     def x_position(self):
-        return self.position[0]
+        return [self.position[0]]
     
     def y_position(self):
-        return self.position[1]
+        return [self.position[1]]
     
     def width(self):
-        return self.size[2]
+        return [self.size[2]]
     
     def height(self):
-        return self.size[3]
+        return [self.size[3]]
 
-class block2():
+class fourbyfour(onebyone):
     def __init__(self, playing_area, position):
-        self.area = playing_area
-        self.color = (0,230,0)
-        self.position = position
-        self.size = [self.position[0], self.position[1], 50, 50]
-    
+        super().__init__(playing_area, position)
+        self.size1 = [self.position[0] +50, self.position[1], 50,50]
+        self.size2 = [self.position[0], self.position[1] - 50, 50,50]
+        self.size3 = [self.position[0] + 50, self.position[1] - 50, 50,50]
+        self.onebyone = [self.size, self.size1, self.size2, self.size3]
+
     def draw(self):
-        return pygame.draw.rect(self.area, self.color, self.size)
+        drawings = [self.size, self.size1, self.size2, self.size3]
+        for size in drawings:
+            pygame.draw.rect(self.area, self.color, size)
+    
+    def x_position():
+        return [self.size[0], self.size1[0], self.size2[0], self.size3[0]]
+    
+    def y_position(self):
+        return [self.size[1], self.size1[1], self.size2[1], self.size3[1]]
+    
+    def width(self):
+        return [self.size[2], self.size1[2], self.size2[2], self.size3[2]]
+
+    def height(self):
+        return [self.size[3], self.size1[3], self.size2[3], self.size3[3]]
+
     
     
 
