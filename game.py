@@ -17,13 +17,13 @@ class tetris:
         self.blocks = []
         self.spawn = [self.playing_area.get_width()/2 - 50, 50]
         self.y_position_list = []
+        self.rotation = 2
 
 
     def run_game(self):
         score = '0'
         front  = Path(Path.cwd()/'Assets'/'static'/'Inter_18pt-Black.ttf')
-        d_x = self.playing_area.get_width()//5
-        
+              
         while True:
             
             
@@ -39,7 +39,15 @@ class tetris:
                 
             
             
-            cur = ch.block1(self.playing_area, self.spawn)
+            cur = ch.fourbyfour(self.playing_area, self.spawn)
+
+            if self.rotation % 2 == 1:
+                width_c = str(cur.width())
+                length_c = str(cur.height())
+
+                cur.size[2] = int(length_c)
+                cur.size[3] = int(width_c)
+                 
             
             cur.draw()
             
@@ -52,64 +60,76 @@ class tetris:
                 if event.type == pygame.KEYDOWN:
                         
                     if event.key == pygame.K_r:
-                        cur.position[0] *= -1
-                        cur.position[1] *= -1
+                        if self.rotation % 2 == 0:
+                            self.rotation = 3
+                        else:
+                            self.rotation = 2
+
                     
-                    if event.key == pygame.K_a and 0 < cur.position[0] - d_x:
-                        cur.position[0] -= d_x
+                    if event.key == pygame.K_a and 0 < cur.position[0] - cur.d_x:
+                        cur.position[0] -= cur.d_x
                     
                             
 
-                    if event.key == pygame.K_d and cur.position[0] + d_x < 499:
-                        cur.position[0] += d_x
+                    if event.key == pygame.K_d and cur.position[0] + cur.d_x < 500:
+                        cur.position[0] += cur.d_x
                         
                         
-                    if event.key == pygame.K_SPACE:            
-                        cur.position[1] = self.playing_area.get_height() - 50
-                        rectangles = pygame.Rect(cur.x_position(), cur.y_position(), cur.width(), cur.height())
+                    if event.key == pygame.K_SPACE:
+                        for block in cur.onebyone:
+                            block[1] += 600
+                        
                         print('New iteration')
-                    
-                        for R in self.blocks:
-                            
-                            if min(max(round((cur.x_position()), 0),0), 400) == round(R.x, 0):
-                                cur.position[1] -= 50
-                                
                         
-                        rectangles = pygame.Rect(cur.x_position(), cur.y_position(), cur.width(), cur.height())
-                        print(f"rectangle y = {rectangles.y}")
-                        self.y_position_list.append(rectangles.y)
-                        print(f"y position list: {self.y_position_list}")
-                        self.blocks.append(rectangles)
-                        print(f'block list: {self.blocks}')
-
+                        
+                        for r in self.blocks:
+                            for i in cur.onebyone:
+                                if min(max(round((i[0]), 0),0), 400) == round(r.x, 0):
+                                    i[1] -= 50
+                            
+                           
+                                
+                        for block in cur.onebyone:
+                            rectangle = pygame.Rect(block[0], block[1], block[2], block[3])
+                            
+                            self.y_position_list.append(rectangle.y)
+                            self.blocks.append(rectangle)
+                        
+                       
                         for y in set(self.y_position_list):
-                            if self.y_position_list.count(y) >= 5:
+                            if self.y_position_list.count(y) > 9:
                                 while y in self.y_position_list:
                                     del self.blocks[self.y_position_list.index(y)]
                                     self.y_position_list.remove(y)
-                            
-                                for R in self.blocks:
-                                    R.y += 50
-                                
-                                for i in range(len(self.y_position_list)):
-                                    self.y_position_list[i] += 50
-                                
+                                    
                                 c_score = int(score[:])
 
                                 c_score += 10
 
                                 score = str(c_score)
                                 
+                            # for r in self.blocks:
+                            #     if min(self.y_position_list) >= r.y and r.y <= 0:
+                            #         R.y += 50
+                                
+                            # for i in range(len(self.y_position_list)):
+                            #     if min(self.y_position_list) >= i and i <= 0:
+                            #         self.y_position_list[i] += 50
+                                
+                        
+
+                                
+                        
+                        print(self.y_position_list)
                                 
                         
                         
                         
                                 
-                        print(f'done  {self.blocks}')       
+                        
 
                         cur.position[1] = 50
                         
-            
             
             self.playing_area.blit(sys_font.render(score, True, (0,0,0)), (self.playing_area.get_width()/2, 10))
             self.screen.blit(self.playing_area, (400,50))
