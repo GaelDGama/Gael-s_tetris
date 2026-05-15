@@ -25,6 +25,14 @@ class onebyone():
     
     def height(self):
         return [self.size[3]]
+    
+    def get_right(self):
+        x = []
+        for i in self.onebyone:
+            x.append(i[0])
+        
+        return max(x)
+
 
 class fourbyfour(onebyone):
     def __init__(self, playing_area, position):
@@ -39,7 +47,7 @@ class fourbyfour(onebyone):
         for size in drawings:
             pygame.draw.rect(self.area, self.color, size)
     
-    def x_position():
+    def x_position(self):
         return [self.size[0], self.size1[0], self.size2[0], self.size3[0]]
     
     def y_position(self):
