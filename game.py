@@ -31,16 +31,39 @@ class tetris:
             self.screen.fill(self.background)
             sys_font = pygame.font.Font(front, size=18)
             
+            for y in set(self.y_position_list):
+                            if self.y_position_list.count(y) > 9:
+                                while y in self.y_position_list:
+                                    del self.blocks[self.y_position_list.index(y)]
+                                    self.y_position_list.remove(y)
+                                    
+                                c_score = int(score[:])
+
+                                c_score += 10
+
+                                score = str(c_score)
+                                
+                                for r in self.blocks:    
+                                    r.y += 50
+                                        
+                                for i in range(len(self.y_position_list)):
+                                        self.y_position_list[i] += 50
            
 
+            cur = ch.fourbyfour(self.playing_area, self.spawn)
+
             for thing in self.blocks:
+                if thing[1] == min(cur.y_position()):
+                    self.blocks = []
+                    self.y_position_list = []
+                    score = '0'
+
                 pygame.draw.rect(self.playing_area, (0,230,0), thing)
                 
                 
             
             
-            cur = ch.fourbyfour(self.playing_area, self.spawn)
-
+            
             if self.rotation % 2 == 1:
                 width_c = str(cur.width())
                 length_c = str(cur.height())
@@ -71,7 +94,7 @@ class tetris:
                     
                             
 
-                    if event.key == pygame.K_d and cur.position[0] + cur.d_x < 500:
+                    if event.key == pygame.K_d and cur.get_right() + cur.d_x < 500:
                         cur.position[0] += cur.d_x
                         
                         
@@ -82,52 +105,22 @@ class tetris:
                         print('New iteration')
                         
                         
-                        for r in self.blocks:
-                            for i in cur.onebyone:
-                                if min(max(round((i[0]), 0),0), 400) == round(r.x, 0):
+                        for i in cur.onebyone:
+                            for r in self.blocks:
+                                if min(max(round((i[0]), 0),0), 500) == round(r.x, 0):
                                     i[1] -= 50
-                            
-                           
+                                    
+    
+                                    
+
                                 
                         for block in cur.onebyone:
                             rectangle = pygame.Rect(block[0], block[1], block[2], block[3])
                             
                             self.y_position_list.append(rectangle.y)
                             self.blocks.append(rectangle)
-                        
-                       
-                        for y in set(self.y_position_list):
-                            if self.y_position_list.count(y) > 9:
-                                while y in self.y_position_list:
-                                    del self.blocks[self.y_position_list.index(y)]
-                                    self.y_position_list.remove(y)
-                                    
-                                c_score = int(score[:])
-
-                                c_score += 10
-
-                                score = str(c_score)
-                                
-                            # for r in self.blocks:
-                            #     if min(self.y_position_list) >= r.y and r.y <= 0:
-                            #         R.y += 50
-                                
-                            # for i in range(len(self.y_position_list)):
-                            #     if min(self.y_position_list) >= i and i <= 0:
-                            #         self.y_position_list[i] += 50
-                                
-                        
-
-                                
-                        
+            
                         print(self.y_position_list)
-                                
-                        
-                        
-                        
-                                
-                        
-
                         cur.position[1] = 50
                         
             
